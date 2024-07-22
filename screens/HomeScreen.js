@@ -12,7 +12,7 @@ const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
   const [location, setLocation] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga
+  const [isLoading, setIsLoading] = useState(false);
   const [screenDimensions, setScreenDimensions] = useState({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
@@ -39,17 +39,17 @@ const HomeScreen = () => {
   }, []);
 
   const handleGetLocation = () => {
-    setIsLoading(true); // Mostrar indicador de carga
+    setIsLoading(true);
     Geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
-        setIsLoading(false); // Ocultar indicador de carga
+        setIsLoading(false);
         console.log('Current location:', position);
       },
       (error) => {
         console.log(error.code, error.message);
-        setIsLoading(false); // Ocultar indicador de carga en caso de error
+        setIsLoading(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
@@ -144,7 +144,7 @@ const HomeScreen = () => {
           />
         </View>
       </View>
-      {isLoading && <LoadingOverlay />} {/* Mostrar overlay de carga */}
+      {isLoading && <LoadingOverlay />}
     </View>
   );
 };
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   navbarWrapper: {
     width: '100%',
-    height: 70, // Altura del Navbar
+    height: 70,
     zIndex: 1,
     elevation: 1,
     position: 'absolute',
