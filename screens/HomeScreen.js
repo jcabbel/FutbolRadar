@@ -23,7 +23,6 @@ const HomeScreen = () => {
     { id: '3', title: 'Item 3' },
     { id: '4', title: 'Item 4' },
     { id: '5', title: 'Item 5' },
-    { id: '6', title: 'Item 6' },
   ]);
 
   useEffect(() => {
