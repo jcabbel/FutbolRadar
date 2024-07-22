@@ -6,7 +6,6 @@ const Navmenu = () => {
   return (
     <View style={styles.navmenu}>
       <Navlink href="Home" text="Home" />
-      <Navlink href="About" text="About" />
       <Navlink href="Contact" text="Contact" />
     </View>
   );
