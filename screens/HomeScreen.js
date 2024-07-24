@@ -6,7 +6,7 @@ import { GOOGLE_MAPS_API_KEY } from '@env';
 import Navbar from '../components/Navbar';
 import Slider from '@react-native-community/slider';
 import Geolocation from 'react-native-geolocation-service';
-import LoadingOverlay from '../components/loadingOverlay';  
+import LoadingOverlay from '../components/LoadingOverlay';  
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -99,8 +99,8 @@ const HomeScreen = () => {
                 step={1}
                 value={distance}
                 onValueChange={setDistance}
-                minimumTrackTintColor="#99FF33"
-                maximumTrackTintColor="#25a519"
+                minimumTrackTintColor="#25a519"
+                maximumTrackTintColor="#99FF33"
                 thumbTintColor="#25a519"
               />
             </View>
