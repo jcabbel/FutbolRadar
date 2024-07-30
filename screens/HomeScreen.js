@@ -11,7 +11,7 @@ import Geolocation from 'react-native-geolocation-service';
 import LoadingOverlay from '../components/LoadingOverlay';
 
 // API imports
-import { fetchMatches } from '../services/api';
+import { fetchMatches } from '../services/api'; 
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -113,8 +113,8 @@ const HomeScreen = () => {
                 step={1}
                 value={distance}
                 onValueChange={setDistance}
-                minimumTrackTintColor="#99FF33"
-                maximumTrackTintColor="#25a519"
+                minimumTrackTintColor="#25a519"
+                maximumTrackTintColor="#99FF33"
                 thumbTintColor="#25a519"
               />
             </View>
