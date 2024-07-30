@@ -3,10 +3,15 @@ import { View, StyleSheet, Text, TouchableOpacity, Dimensions, FlatList } from '
 import { Calendar } from 'react-native-calendars';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { GOOGLE_MAPS_API_KEY } from '@env';
+
+// Component imports
 import Navbar from '../components/Navbar';
 import Slider from '@react-native-community/slider';
 import Geolocation from 'react-native-geolocation-service';
-import LoadingOverlay from '../components/LoadingOverlay';  
+import LoadingOverlay from '../components/LoadingOverlay';
+
+// API imports
+import { fetchMatches } from '../services/api'; 
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -17,12 +22,7 @@ const HomeScreen = () => {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   });
-  const [listData, setListData] = useState([
-    { id: '1', title: 'Item 1' },
-    { id: '2', title: 'Item 2' },
-    { id: '3', title: 'Item 3' },
-    { id: '4', title: 'Item 4' },
-  ]);
+  const [listData, setListData] = useState([]);
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -45,7 +45,6 @@ const HomeScreen = () => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
         setIsLoading(false);
-        console.log('Current location:', position);
       },
       (error) => {
         console.log(error.code, error.message);
@@ -55,10 +54,25 @@ const HomeScreen = () => {
     );
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     console.log('Buscando en un radio de:', distance, 'kms');
     console.log('Fecha seleccionada:', selectedDate);
     console.log('Lugar seleccionado: ', location);
+
+    setIsLoading(true);
+    try {
+      const params = {
+        // live: 'all',
+        // status: 'NS',
+        // date: selectedDate,
+      };
+      const data = await fetchMatches(params);
+      setListData(data);
+    } catch (error) {
+      console.error('Error al obtener los partidos:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDayPress = (day) => {
@@ -66,8 +80,8 @@ const HomeScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.listItem}>
-      <Text style={styles.listItemText}>{item.title}</Text>
+    <View style={styles.matchItem}>
+      <Text>{item.teams.home.name} vs {item.teams.away.name}</Text>
     </View>
   );
 
@@ -139,8 +153,8 @@ const HomeScreen = () => {
         <View style={styles.listWrapper}>
           <FlatList
             data={listData}
+            keyExtractor={(item) => item.fixture.id.toString()}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
           />
         </View>
       </View>
@@ -168,7 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    marginTop: 70, 
+    marginTop: 70,
   },
   mapWrapper: {
     width: '50%',
@@ -268,6 +282,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   listItemText: {
+    fontSize: 16,
+  },
+  matchItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  matchItemText: {
     fontSize: 16,
   },
 });
