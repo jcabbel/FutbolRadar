@@ -14,7 +14,7 @@ import Geolocation from 'react-native-geolocation-service';
 import LoadingOverlay from '../components/LoadingOverlay';
 
 // API imports
-import { fetchMatches } from '../services/api'; 
+import { addMatches, fetchMatches } from '../services/api'; 
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -65,12 +65,12 @@ const HomeScreen = () => {
     setIsLoading(true);
     try {
       const params = {
-        // live: 'all',
-        // status: 'NS',
-        // date: selectedDate,
+        status: 'NS',
+        league: '140',
+        season: '2024',
       };
-      const data = await fetchMatches(params);
-      setListData(data);
+      // const data = await fetchMatches(params);
+      // setListData(data);
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
     } finally {
@@ -85,6 +85,7 @@ const HomeScreen = () => {
   const renderItem = ({ item }) => (
     <View style={styles.matchItem}>
       <Text>{item.teams.home.name} vs {item.teams.away.name}</Text>
+      <Text>{item.fixture.date}</Text>
     </View>
   );
 
