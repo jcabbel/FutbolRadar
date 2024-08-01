@@ -8,7 +8,7 @@ const ContactScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSend = () => {
     setIsLoading(true);
@@ -19,11 +19,16 @@ const ContactScreen = () => {
     }, 2000);
   };
 
+  const handleLoadImage = () => {
+    setIsLoading(false);
+  }
+ 
   return (
     <ImageBackground
       source={require('../assets/football-ground.jpg')}
       style={styles.backgroundImage}
       imageStyle={styles.backgroundImageStyle}
+      onLoad={handleLoadImage}
     >
       <View style={styles.overlay} />
       <View style={styles.container}>
