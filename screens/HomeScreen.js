@@ -80,7 +80,8 @@ const HomeScreen = () => {
         const docDate = fixtureDate.split("T")[0];
         
         if (docDate === selectedDate) {
-            const venueDocRef = doc(db, "venues", data.fixture.venue.id);
+            const id = data.fixture.venue.id.toString();
+            const venueDocRef = doc(db, "venues", id);
             const venueDocSnap = await getDoc(venueDocRef);
             
             if (venueDocSnap.exists()) {
