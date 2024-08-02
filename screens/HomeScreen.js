@@ -15,6 +15,7 @@ import Navbar from '../components/Navbar';
 import Slider from '@react-native-community/slider';
 import Geolocation from 'react-native-geolocation-service';
 import LoadingOverlay from '../components/LoadingOverlay';
+import MatchCard from '../components/MatchCard';
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -123,12 +124,24 @@ const HomeScreen = () => {
     setSelectedDate(day.dateString);
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.matchItem}>
-      <Text>{item.teams.home.name} vs {item.teams.away.name}</Text>
-      <Text>{item.fixture.date}</Text>
-    </View>
-  );
+  const renderItem = ({ item }) => {
+    const { home, away } = item.teams;
+    const date = item.fixture.date.split("T")[0];
+    const time = item.fixture.date.split("T")[1].split("+")[0];
+    const leagueLogo = item.league.logo;
+    
+    return (
+      <MatchCard 
+        homeTeam={home.name} 
+        awayTeam={away.name} 
+        date={date} 
+        time={time}
+        homeLogo={home.logo} 
+        awayLogo={away.logo} 
+        leagueLogo={leagueLogo}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -196,10 +209,11 @@ const HomeScreen = () => {
           </View>
         </View>
         <View style={styles.listWrapper}>
-          <FlatList
+        <FlatList
             data={listData}
-            keyExtractor={(item) => item.fixture.id.toString()}
             renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContainer}
           />
         </View>
       </View>
