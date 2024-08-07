@@ -90,8 +90,6 @@ const HomeScreen = () => {
               
               if (Array.isArray(venueData.location) && venueData.location.length === 2) {
                 const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
-                
-                if (!isNaN(latitude) && !isNaN(longitude)) {
                   const distanceInMeters = getDistance(
                     { latitude: location.lat, longitude: location.lng },
                     { latitude, longitude }
@@ -101,9 +99,6 @@ const HomeScreen = () => {
                   if (distanceInKm <= distance) {
                     documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
                   }
-                } else {
-                  console.log(`Datos de ubicación inválidos para el venue con ID: ${data.fixture.venue.id}`);
-                }
               } else {
                 console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
               }
