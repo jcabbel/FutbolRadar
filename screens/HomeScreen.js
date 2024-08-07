@@ -1,32 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { GOOGLE_MAPS_API_KEY } from '@env';
-import { db } from '../firebaseConfig';
-import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
-import { getDistance } from 'geolib';
-
-// Styles imports
-import styles from '../styles/HomeScreenStyles';
-
-// Component imports
 import Navbar from '../components/Navbar';
 import Slider from '@react-native-community/slider';
 import Geolocation from 'react-native-geolocation-service';
-import LoadingOverlay from '../components/LoadingOverlay';
-import MatchCard from '../components/MatchCard';
+import LoadingOverlay from '../components/loadingOverlay';  
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
   const [location, setLocation] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga
   const [screenDimensions, setScreenDimensions] = useState({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   });
-  const [listData, setListData] = useState([]);
+  const [listData, setListData] = useState([
+    { id: '1', title: 'Item 1' },
+    { id: '2', title: 'Item 2' },
+    { id: '3', title: 'Item 3' },
+    { id: '4', title: 'Item 4' },
+    { id: '5', title: 'Item 5' },
+  ]);
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -43,105 +40,37 @@ const HomeScreen = () => {
   }, []);
 
   const handleGetLocation = () => {
-    setIsLoading(true);
+    setIsLoading(true); // Mostrar indicador de carga
     Geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
-        setIsLoading(false);
+        setIsLoading(false); // Ocultar indicador de carga
+        console.log('Current location:', position);
       },
       (error) => {
         console.log(error.code, error.message);
-        setIsLoading(false);
+        setIsLoading(false); // Ocultar indicador de carga en caso de error
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
 
-  const handleSearch = async () => {
-    if (!location) {
-      console.log('Ubicación no disponible');
-      return;
-    }
-  
-    if (!selectedDate) {
-      console.log('Fecha no seleccionada');
-      return;
-    }
-  
-    setIsLoading(true);
-    try {
-      const q = query(collection(db, "primeraDivision"));
-      const querySnapshot = await getDocs(q);
-      const documents = [];
-  
-      for (const docSnap of querySnapshot.docs) {
-        const data = docSnap.data();
-        const fixtureDate = typeof data.fixture.date === 'string' ? data.fixture.date : '';
-        const docDate = fixtureDate.split("T")[0];
-        
-        if (docDate === selectedDate) {
-            const id = data.fixture.venue.id.toString();
-            const venueDocRef = doc(db, "venues", id);
-            const venueDocSnap = await getDoc(venueDocRef);
-            
-            if (venueDocSnap.exists()) {
-              const venueData = venueDocSnap.data();
-              
-              if (Array.isArray(venueData.location) && venueData.location.length === 2) {
-                const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
-                
-                if (!isNaN(latitude) && !isNaN(longitude)) {
-                  const distanceInMeters = getDistance(
-                    { latitude: location.lat, longitude: location.lng },
-                    { latitude, longitude }
-                  );
-                  const distanceInKm = distanceInMeters / 1000;
-  
-                  if (distanceInKm <= distance) {
-                    documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
-                  }
-                } else {
-                  console.log(`Datos de ubicación inválidos para el venue con ID: ${data.fixture.venue.id}`);
-                }
-              } else {
-                console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
-              }
-            } else {
-              console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
-            }
-          }
-        }
-      setListData(documents);
-    } catch (error) {
-      console.error('Error al obtener los partidos:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSearch = () => {
+    console.log('Buscando en un radio de:', distance, 'kms');
+    console.log('Fecha seleccionada:', selectedDate);
+    console.log('Lugar seleccionado: ', location);
   };
 
   const handleDayPress = (day) => {
     setSelectedDate(day.dateString);
   };
 
-  const renderItem = ({ item }) => {
-    const { home, away } = item.teams;
-    const date = item.fixture.date.split("T")[0];
-    const time = item.fixture.date.split("T")[1].split("+")[0];
-    const leagueLogo = item.league.logo;
-    
-    return (
-      <MatchCard 
-        homeTeam={home.name} 
-        awayTeam={away.name} 
-        date={date} 
-        time={time}
-        homeLogo={home.logo} 
-        awayLogo={away.logo} 
-        leagueLogo={leagueLogo}
-      />
-    );
-  };
+  const renderItem = ({ item }) => (
+    <View style={styles.listItem}>
+      <Text style={styles.listItemText}>{item.title}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -171,8 +100,8 @@ const HomeScreen = () => {
                 step={1}
                 value={distance}
                 onValueChange={setDistance}
-                minimumTrackTintColor="#25a519"
-                maximumTrackTintColor="#99FF33"
+                minimumTrackTintColor="#99FF33"
+                maximumTrackTintColor="#25a519"
                 thumbTintColor="#25a519"
               />
             </View>
@@ -209,17 +138,139 @@ const HomeScreen = () => {
           </View>
         </View>
         <View style={styles.listWrapper}>
-        <FlatList
+          <FlatList
             data={listData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContainer}
           />
         </View>
       </View>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && <LoadingOverlay />} {/* Mostrar overlay de carga */}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#faf9f7',
+  },
+  navbarWrapper: {
+    width: '100%',
+    height: 70, // Altura del Navbar
+    zIndex: 1,
+    elevation: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  contentWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    marginTop: 70, 
+  },
+  mapWrapper: {
+    width: '50%',
+    height: '100%',
+  },
+  searchWrapper: {
+    width: '25%',
+    height: '100%',
+    backgroundColor: '#faf9f7',
+    justifyContent: 'flex-top',
+    alignItems: 'center',
+  },
+  listWrapper: {
+    width: '25%',
+    height: '100%',
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  mapContainer: {
+    width: '100%',
+    height: '100%',
+  },
+  elementsContainer: {
+    width: '100%',
+    padding: 20,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sliderContainer: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 20,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  sliderLabel: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  slider: {
+    width: '100%',
+    height: 40,
+  },
+  calendarContainer: {
+    width: '100%',
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  calendar: {
+    width: '100%',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+  },
+  buttonContainer: {
+    width: '100%',
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  searchButton: {
+    width: '45%',
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+    backgroundColor: '#25a519',
+    alignItems: 'center',
+  },
+  locationButton: {
+    width: '45%',
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+    backgroundColor: '#ff7f50',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#faf9f7',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  listItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  listItemText: {
+    fontSize: 16,
+  },
+});
 
 export default HomeScreen;
