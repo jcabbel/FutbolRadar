@@ -71,7 +71,7 @@ const HomeScreen = () => {
   
     setIsLoading(true);
     try {
-      const q = query(collection(db, "primeraDivision"));
+      const q = query(collection(db, "matches"));
       const querySnapshot = await getDocs(q);
       const documents = [];
   
