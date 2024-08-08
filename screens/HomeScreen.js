@@ -191,6 +191,7 @@ const HomeScreen = () => {
                   [selectedDate]: { selected: true, marked: true, dotColor: '#25a519' },
                 }}
                 onDayPress={handleDayPress}
+                firstDay={1}
               />
             </View>
           </View>
