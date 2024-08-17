@@ -1,0 +1,41 @@
+/* Estilo general para todos los toasts */
+.toast-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Estilo para el toast de éxito */
+  .toast-success {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* Estilo para el toast de error */
+  .toast-error {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* Estilo para el toast de advertencia */
+  .toast-warning {
+    background-color: #ffc107;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* Ajusta la posición del contenedor de toasts en la esquina superior derecha */
+  .Toastify__toast-container--top-right {
+    top: 75px; /* Ajusta esto según tus necesidades */
+    right: 20px; /* Mantén este valor para la posición horizontal */
+    position: fixed; /* Asegúrate de que esté en posición fija para que permanezca en la pantalla */
+  }
+  
