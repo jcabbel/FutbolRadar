@@ -6,9 +6,15 @@ import { GOOGLE_MAPS_API_KEY } from '@env';
 import { db } from '../firebaseConfig';
 import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getDistance } from 'geolib';
+import { toast, ToastContainer } from 'react-toastify';
+import CustomToast from '../components/CustomToast';
+
 
 // Styles imports
 import styles from '../styles/HomeScreenStyles';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/CustomToastStyles.css';
+
 
 // Component imports
 import Navbar from '../components/Navbar';
@@ -51,7 +57,8 @@ const HomeScreen = () => {
         setIsLoading(false);
       },
       (error) => {
-        console.log(error.code, error.message);
+        console.error(error.code, error.message);
+        toast.error(<CustomToast message="No se pudo obtener la ubicación. Intenta de nuevo." />);
         setIsLoading(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
@@ -60,53 +67,53 @@ const HomeScreen = () => {
 
   const handleSearch = async () => {
     if (!location) {
-      console.log('Ubicación no disponible');
+      toast.warn(<CustomToast message="Ubicación no disponible. Por favor, haz click en el botón Ubicación" />);
       return;
     }
-  
+
     if (!selectedDate) {
-      console.log('Fecha no seleccionada');
+      toast.warn(<CustomToast message="Fecha no seleccionada. Por favor, selecciona una fecha." />);
       return;
     }
-  
+
     setIsLoading(true);
     try {
       const q = query(collection(db, "matches"));
       const querySnapshot = await getDocs(q);
       const documents = [];
-  
+
       for (const docSnap of querySnapshot.docs) {
         const data = docSnap.data();
         const fixtureDate = typeof data.fixture.date === 'string' ? data.fixture.date : '';
         const docDate = fixtureDate.split("T")[0];
-        
+
         if (docDate === selectedDate) {
-            const id = data.fixture.venue.id.toString();
-            const venueDocRef = doc(db, "venues", id);
-            const venueDocSnap = await getDoc(venueDocRef);
-            
-            if (venueDocSnap.exists()) {
-              const venueData = venueDocSnap.data();
-              
-              if (Array.isArray(venueData.location) && venueData.location.length === 2) {
-                const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
-                  const distanceInMeters = getDistance(
-                    { latitude: location.lat, longitude: location.lng },
-                    { latitude, longitude }
-                  );
-                  const distanceInKm = distanceInMeters / 1000;
-  
-                  if (distanceInKm <= distance) {
-                    documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
-                  }
-              } else {
-                console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
+          const id = data.fixture.venue.id.toString();
+          const venueDocRef = doc(db, "venues", id);
+          const venueDocSnap = await getDoc(venueDocRef);
+
+          if (venueDocSnap.exists()) {
+            const venueData = venueDocSnap.data();
+
+            if (Array.isArray(venueData.location) && venueData.location.length === 2) {
+              const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
+              const distanceInMeters = getDistance(
+                { latitude: location.lat, longitude: location.lng },
+                { latitude, longitude }
+              );
+              const distanceInKm = distanceInMeters / 1000;
+
+              if (distanceInKm <= distance) {
+                documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
               }
             } else {
-              console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
+              console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
             }
+          } else {
+            console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
           }
         }
+      }
       setListData(documents);
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
@@ -124,7 +131,7 @@ const HomeScreen = () => {
     const date = item.fixture.date.split("T")[0];
     const time = item.fixture.date.split("T")[1].split("+")[0];
     const leagueLogo = item.league.logo;
-    
+
     return (
       <MatchCard 
         homeTeam={home.name} 
@@ -205,7 +212,7 @@ const HomeScreen = () => {
           </View>
         </View>
         <View style={styles.listWrapper}>
-        <FlatList
+          <FlatList
             data={listData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
@@ -214,6 +221,9 @@ const HomeScreen = () => {
         </View>
       </View>
       {isLoading && <LoadingOverlay />}
+      <ToastContainer 
+        position="top-right"
+      />
     </View>
   );
 };
