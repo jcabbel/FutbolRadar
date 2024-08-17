@@ -34,8 +34,8 @@
   
   /* Ajusta la posición del contenedor de toasts en la esquina superior derecha */
   .Toastify__toast-container--top-right {
-    top: 75px; /* Ajusta esto según tus necesidades */
-    right: 20px; /* Mantén este valor para la posición horizontal */
-    position: fixed; /* Asegúrate de que esté en posición fija para que permanezca en la pantalla */
+    top: 75px;
+    right: 20px;
+    position: fixed;
   }
   

@@ -114,6 +114,9 @@ const HomeScreen = () => {
           }
         }
       }
+      if (documents.length === 0) {
+        toast.warn("No se encontraron resultados para la búsqueda.");
+      }
       setListData(documents);
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
