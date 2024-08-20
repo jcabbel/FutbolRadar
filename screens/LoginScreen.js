@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import styles from '../styles/LoginScreenStyles';
@@ -27,6 +27,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
+    <ImageBackground
+      source={require('../assets/stand.jpg')}
+      style={styles.backgroundImage}
+    >
+    <View style={styles.overlay} />
     <View style={styles.container}>
       <View style={styles.formContainer}>
         <View style={styles.logoContainer}>
@@ -63,6 +68,7 @@ const LoginScreen = ({ navigation }) => {
         <Text>Solo verás los partidos de Primera División</Text>
       </View>
     </View>
+    </ImageBackground>  
   );
 };
 
