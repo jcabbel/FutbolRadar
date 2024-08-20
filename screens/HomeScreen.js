@@ -8,7 +8,7 @@ import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getDistance } from 'geolib';
 import { toast, ToastContainer } from 'react-toastify';
 import CustomToast from '../components/CustomToast';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // Styles imports
 import styles from '../styles/HomeScreenStyles';
@@ -33,6 +33,8 @@ const HomeScreen = () => {
     height: Dimensions.get('window').height,
   });
   const [listData, setListData] = useState([]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [collectionName, setCollectionName] = useState('matches');
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -47,6 +49,23 @@ const HomeScreen = () => {
       subscription?.remove();
     };
   }, []);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuario logueado
+        setIsUserLoggedIn(true);
+        setCollectionName('matches'); // Nombre de la colección para usuarios logueados
+      } else {
+        // Usuario no logueado
+        setIsUserLoggedIn(false);
+        setCollectionName('matches_guest'); // Nombre de la colección para usuarios no logueados
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+  
 
   const handleGetLocation = () => {
     setIsLoading(true);
@@ -78,7 +97,7 @@ const HomeScreen = () => {
 
     setIsLoading(true);
     try {
-      const q = query(collection(db, "matches"));
+      const q = query(collection(db, collectionName));
       const querySnapshot = await getDocs(q);
       const documents = [];
 
@@ -172,7 +191,7 @@ const HomeScreen = () => {
               <Slider
                 style={styles.slider}
                 minimumValue={1}
-                maximumValue={50}
+                maximumValue={5000}
                 step={1}
                 value={distance}
                 onValueChange={setDistance}
