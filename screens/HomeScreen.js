@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, SectionList, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { GOOGLE_MAPS_API_KEY } from '@env';
@@ -7,7 +7,6 @@ import { db } from '../firebaseConfig';
 import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getDistance } from 'geolib';
 import { toast, ToastContainer } from 'react-toastify';
-import CustomToast from '../components/CustomToast';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // Styles imports
@@ -22,6 +21,7 @@ import Slider from '@react-native-community/slider';
 import Geolocation from 'react-native-geolocation-service';
 import LoadingOverlay from '../components/LoadingOverlay';
 import MatchCard from '../components/MatchCard';
+import CustomToast from '../components/CustomToast';
 
 const HomeScreen = () => {
   const [distance, setDistance] = useState(0);
@@ -136,7 +136,18 @@ const HomeScreen = () => {
       if (documents.length === 0) {
         toast.warn("No se encontraron resultados para la búsqueda.");
       }
-      setListData(documents);
+        const sections = documents.reduce((acc, doc) => {
+        const leagueName = doc.league.name;
+        if (!acc.some(section => section.title === leagueName)) {
+          acc.push({ title: leagueName, data: [doc] });
+        } else {
+          const section = acc.find(section => section.title === leagueName);
+          section.data.push(doc);
+        }
+        return acc;
+      }, []);
+  
+      setListData(sections);
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
     } finally {
@@ -150,12 +161,14 @@ const HomeScreen = () => {
 
   const renderItem = ({ item }) => {
     const { home, away } = item.teams;
+    const id = item.fixture.id;
     const date = item.fixture.date.split("T")[0];
     const time = item.fixture.date.split("T")[1].split("+")[0];
     const leagueLogo = item.league.logo;
 
     return (
       <MatchCard 
+        key={id}
         homeTeam={home.name} 
         awayTeam={away.name} 
         date={date} 
@@ -184,14 +197,16 @@ const HomeScreen = () => {
             </GoogleMap>
           </LoadScript>
         </View>
-        <View style={styles.searchWrapper}>
+        <ScrollView 
+          style={styles.searchWrapper}
+          contentContainerStyle={styles.searchContentContainer}>
           <View style={styles.elementsContainer}>
             <View style={styles.sliderContainer}>
               <Text style={styles.sliderLabel}>Seleccionar distancia: {distance} km</Text>
               <Slider
                 style={styles.slider}
                 minimumValue={1}
-                maximumValue={5000}
+                maximumValue={50}
                 step={1}
                 value={distance}
                 onValueChange={setDistance}
@@ -232,14 +247,22 @@ const HomeScreen = () => {
               <Text style={styles.buttonText}>BUSCAR</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
         <View style={styles.listWrapper}>
-          <FlatList
-            data={listData}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContainer}
-          />
+          <ScrollView
+            contentContainerStyle={styles.listContentContainer}>
+            <SectionList
+              sections={listData}
+              renderItem={({ item }) => renderItem({ item })}
+              renderSectionHeader={({ section: { title } }) => (
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionHeaderText}>{title}</Text>
+                </View>
+              )}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.listContainer}
+            />
+          </ScrollView>
         </View>
       </View>
       {isLoading && <LoadingOverlay />}
