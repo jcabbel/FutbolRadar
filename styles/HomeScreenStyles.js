@@ -24,8 +24,8 @@ export default StyleSheet.create({
 
   // Map styles
   mapWrapper: {
-    width: '50%',
-    height: '100%',
+    flex: 2,
+    height: '100%'
   },
   mapContainer: {
     width: '100%',
@@ -35,13 +35,13 @@ export default StyleSheet.create({
   // Filters styles
 
   searchWrapper: {
-    width: '25%',
-    height: '100%',
+    flex: 1,
     backgroundColor: '#faf9f7',
-    justifyContent: 'flex-top',
+  },
+  searchContentContainer: {
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
-
   elementsContainer: {
     width: '100%',
     padding: 20,
@@ -116,15 +116,25 @@ export default StyleSheet.create({
   // List styles
   listWrapper: {
     flex: 1,
-    height: '100%',
-    padding: 10,
-    backgroundColor: '#faf9f7',
-    justifyContent: 'flex-start',
-    alignItems: 'left',
+    height: '45%',
+    alignSelf: 'top',
+  },
+  listContentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 20,
   },
   listContainer: {
-    width: '100%',
-    backgroundColor: '#f0f0f0',
+    flexGrow: 1,
+    padding: 10,
+  },
+  sectionHeader: {
+    padding: 10,
+  },
+  sectionHeaderText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
   matchCardContainer: {
     width: '100%',
