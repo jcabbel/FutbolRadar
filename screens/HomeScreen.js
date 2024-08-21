@@ -35,6 +35,7 @@ const HomeScreen = () => {
   const [listData, setListData] = useState([]);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [collectionName, setCollectionName] = useState('matches');
+  const [querySnapshot, setQuerySnapshot] = useState(null);
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -54,18 +55,36 @@ const HomeScreen = () => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Usuario logueado
         setIsUserLoggedIn(true);
-        setCollectionName('matches'); // Nombre de la colección para usuarios logueados
+        setCollectionName('matches');
       } else {
-        // Usuario no logueado
         setIsUserLoggedIn(false);
-        setCollectionName('matches_guest'); // Nombre de la colección para usuarios no logueados
+        setCollectionName('matches_guest');
       }
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
+      try {
+        const q = query(collection(db, collectionName));
+        const querySnapshot = await getDocs(q);
+
+        setQuerySnapshot(querySnapshot);
   
+      } catch (error) {
+        console.error('Error al obtener los partidos:', error);
+        toast.error(<CustomToast message="Error al obtener los partidos. Por favor, intenta de nuevo." />);
+      } finally {
+        setIsLoading(false)
+      }
+    };
+  
+    fetchData();
+  
+  }, [collectionName]);
 
   const handleGetLocation = () => {
     setIsLoading(true);
@@ -95,10 +114,15 @@ const HomeScreen = () => {
       return;
     }
 
+    if (!querySnapshot || querySnapshot.empty) {
+      toast.warn(<CustomToast message="No se encontraron datos. Intenta de nuevo." />);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const q = query(collection(db, collectionName));
-      const querySnapshot = await getDocs(q);
+      // const q = query(collection(db, collectionName));
+      // const querySnapshot = await getDocs(q);
       const documents = [];
 
       for (const docSnap of querySnapshot.docs) {
