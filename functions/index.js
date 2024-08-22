@@ -3,9 +3,8 @@ const admin = require('firebase-admin');
 const axios = require('axios');
 admin.initializeApp();
 
-exports.fetchFootballData = functions.pubsub.schedule('15 02 * * 3').timeZone('Europe/Madrid').onRun(async (context) => {
+exports.fetchFootballData = functions.pubsub.schedule('40 12 * * 4').timeZone('Europe/Madrid').onRun(async (context) => {
 
-  // URLs de las ligas y competiciones
   const apiUrl1 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=140&season=2024&timezone=Europe/Madrid';
   const apiUrl2 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=141&season=2024&timezone=Europe/Madrid';
   const apiUrl3 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=435&season=2024&timezone=Europe/Madrid';
@@ -22,11 +21,17 @@ exports.fetchFootballData = functions.pubsub.schedule('15 02 * * 3').timeZone('E
   const apiUrl33 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=848&season=2024&timezone=Europe/Madrid';
 
   try {
-    const [response1, response2, response3, response4, response5, response6, response7, response8, response9, response10, response11, response31, response32, response33] = await Promise.all([
+    const [response1, response2, response3, response4, response31, response32, response33] = await Promise.all([
       axios.get(apiUrl1, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl2, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl3, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl4, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
+      axios.get(apiUrl31, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
+      axios.get(apiUrl32, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
+      axios.get(apiUrl33, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
+    ]);
+
+    const [response5, response6, response7, response8, response9, response10, response11] = await Promise.all([
       axios.get(apiUrl5, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl6, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl7, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
@@ -34,9 +39,6 @@ exports.fetchFootballData = functions.pubsub.schedule('15 02 * * 3').timeZone('E
       axios.get(apiUrl9, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl10, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
       axios.get(apiUrl11, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
-      axios.get(apiUrl31, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
-      axios.get(apiUrl32, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
-      axios.get(apiUrl33, { headers: { 'x-rapidapi-host': 'v3.football.api-sports.io', 'x-apisports-key': functions.config().football.api_key } }),
     ]);
 
     const data1 = response1.data.response;
