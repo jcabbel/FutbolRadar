@@ -157,181 +157,181 @@ exports.fetchFootballData = functions.pubsub.schedule('10 04 * * 2').timeZone('E
   }
 });
 
-exports.fetchFootballData2 = functions.pubsub.schedule('10 04 * * 3').timeZone('Europe/Madrid').onRun(async (context) => {
+// exports.fetchFootballData2 = functions.pubsub.schedule('10 04 * * 3').timeZone('Europe/Madrid').onRun(async (context) => {
 
-  //Tercera RFEF
-  const apiUrl12 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=439&season=2024&timezone=Europe/Madrid';
-  const apiUrl13 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=440&season=2024&timezone=Europe/Madrid';
-  const apiUrl14 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=441&season=2024&timezone=Europe/Madrid';
-  const apiUrl15 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=442&season=2024&timezone=Europe/Madrid';
-  const apiUrl16 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=443&season=2024&timezone=Europe/Madrid';
-  const apiUrl17 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=444&season=2024&timezone=Europe/Madrid';
-  const apiUrl18 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=445&season=2024&timezone=Europe/Madrid';
-  const apiUrl19 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=446&season=2024&timezone=Europe/Madrid';
-  const apiUrl20 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=447&season=2024&timezone=Europe/Madrid';
-  const apiUrl21 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=448&season=2024&timezone=Europe/Madrid';
-  const apiUrl22 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=449&season=2024&timezone=Europe/Madrid';
-  const apiUrl23 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=450&season=2024&timezone=Europe/Madrid';
-  const apiUrl24 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=451&season=2024&timezone=Europe/Madrid';
-  const apiUrl25 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=452&season=2024&timezone=Europe/Madrid';
-  const apiUrl26 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=453&season=2024&timezone=Europe/Madrid';
-  const apiUrl27 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=454&season=2024&timezone=Europe/Madrid';
-  const apiUrl28 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=455&season=2024&timezone=Europe/Madrid';
-  const apiUrl29 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=456&season=2024&timezone=Europe/Madrid';
-  const apiUrl30 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=977&season=2024&timezone=Europe/Madrid';
+//   //Tercera RFEF
+//   const apiUrl12 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=439&season=2024&timezone=Europe/Madrid';
+//   const apiUrl13 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=440&season=2024&timezone=Europe/Madrid';
+//   const apiUrl14 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=441&season=2024&timezone=Europe/Madrid';
+//   const apiUrl15 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=442&season=2024&timezone=Europe/Madrid';
+//   const apiUrl16 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=443&season=2024&timezone=Europe/Madrid';
+//   const apiUrl17 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=444&season=2024&timezone=Europe/Madrid';
+//   const apiUrl18 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=445&season=2024&timezone=Europe/Madrid';
+//   const apiUrl19 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=446&season=2024&timezone=Europe/Madrid';
+//   const apiUrl20 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=447&season=2024&timezone=Europe/Madrid';
+//   const apiUrl21 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=448&season=2024&timezone=Europe/Madrid';
+//   const apiUrl22 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=449&season=2024&timezone=Europe/Madrid';
+//   const apiUrl23 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=450&season=2024&timezone=Europe/Madrid';
+//   const apiUrl24 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=451&season=2024&timezone=Europe/Madrid';
+//   const apiUrl25 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=452&season=2024&timezone=Europe/Madrid';
+//   const apiUrl26 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=453&season=2024&timezone=Europe/Madrid';
+//   const apiUrl27 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=454&season=2024&timezone=Europe/Madrid';
+//   const apiUrl28 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=455&season=2024&timezone=Europe/Madrid';
+//   const apiUrl29 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=456&season=2024&timezone=Europe/Madrid';
+//   const apiUrl30 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=977&season=2024&timezone=Europe/Madrid';
   
-  try {
-    const [response12, response13, response14 , response15, response16, response17, response18, response19, response20, response21, response22, response23, response24, response25, response26, response27, response28, response29, response30] = await Promise.all([
-      axios.get(apiUrl12, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl13, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl14, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl15, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl16, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl17, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl18, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl19, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl20, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl21, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl22, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl23, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl24, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl25, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl26, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl27, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl28, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl29, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-      axios.get(apiUrl30, {
-        headers: {
-          'x-rapidapi-host': 'v3.football.api-sports.io',
-          'x-apisports-key': functions.config().football.api_key
-        }
-      }),
-    ]);
+//   try {
+//     const [response12, response13, response14 , response15, response16, response17, response18, response19, response20, response21, response22, response23, response24, response25, response26, response27, response28, response29, response30] = await Promise.all([
+//       axios.get(apiUrl12, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl13, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl14, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl15, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl16, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl17, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl18, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl19, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl20, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl21, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl22, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl23, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl24, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl25, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl26, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl27, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl28, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl29, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//       axios.get(apiUrl30, {
+//         headers: {
+//           'x-rapidapi-host': 'v3.football.api-sports.io',
+//           'x-apisports-key': functions.config().football.api_key
+//         }
+//       }),
+//     ]);
 
-    const data12 = response12.data.response;
-    const data13 = response13.data.response;
-    const data14 = response14.data.response;
-    const data15 = response15.data.response;
-    const data16 = response16.data.response;
-    const data17 = response17.data.response;
-    const data18 = response18.data.response;
-    const data19 = response19.data.response;
-    const data20 = response20.data.response;
-    const data21 = response21.data.response;
-    const data22 = response22.data.response;
-    const data23 = response23.data.response;
-    const data24 = response24.data.response;
-    const data25 = response25.data.response;
-    const data26 = response26.data.response;
-    const data27 = response27.data.response;
-    const data28 = response28.data.response;
-    const data29 = response29.data.response;
-    const data30 = response30.data.response;
+//     const data12 = response12.data.response;
+//     const data13 = response13.data.response;
+//     const data14 = response14.data.response;
+//     const data15 = response15.data.response;
+//     const data16 = response16.data.response;
+//     const data17 = response17.data.response;
+//     const data18 = response18.data.response;
+//     const data19 = response19.data.response;
+//     const data20 = response20.data.response;
+//     const data21 = response21.data.response;
+//     const data22 = response22.data.response;
+//     const data23 = response23.data.response;
+//     const data24 = response24.data.response;
+//     const data25 = response25.data.response;
+//     const data26 = response26.data.response;
+//     const data27 = response27.data.response;
+//     const data28 = response28.data.response;
+//     const data29 = response29.data.response;
+//     const data30 = response30.data.response;
 
 
-    const combinedData = [...data12, ...data13, ...data14, ...data15, ...data16, ...data17, ...data18, ...data19, ...data20, ...data21, ...data22, ...data23, ...data24, ...data25, ...data26, ...data27, ...data28, ...data29, ...data30];
+//     const combinedData = [...data12, ...data13, ...data14, ...data15, ...data16, ...data17, ...data18, ...data19, ...data20, ...data21, ...data22, ...data23, ...data24, ...data25, ...data26, ...data27, ...data28, ...data29, ...data30];
 
-    const batch = admin.firestore().batch();
-    const collectionRef = admin.firestore().collection('matches');
-    combinedData.forEach(match => {
-      const docRef = collectionRef.doc(`match_${match.fixture.id}`);
-      batch.set(docRef, match);
-    });
+//     const batch = admin.firestore().batch();
+//     const collectionRef = admin.firestore().collection('matches');
+//     combinedData.forEach(match => {
+//       const docRef = collectionRef.doc(`match_${match.fixture.id}`);
+//       batch.set(docRef, match);
+//     });
 
-    await batch.commit();
+//     await batch.commit();
 
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-});
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//   }
+// });
 
