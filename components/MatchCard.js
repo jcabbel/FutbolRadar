@@ -27,12 +27,6 @@ const MatchCard = ({ homeTeam, awayTeam, date, time, homeLogo, awayLogo, leagueL
         <Text style={styles.dateText}>{time}</Text>
         <View style={styles.logosContainer}>
           <Image source={{ uri: leagueLogo }} style={styles.leagueLogo} />
-          <TouchableOpacity onPress={handleLinkPress}>
-          <Image
-              source={require('../assets/tickets.png')}
-              style={styles.ticketIcon}
-            />
-        </TouchableOpacity>
         </View>
       </View>
       <View style={styles.teamContainer}>
@@ -115,7 +109,6 @@ const styles = StyleSheet.create({
     width: 29,
     height: 29,
     resizeMode: 'contain',
-    marginRight: 20,
   },
   ticketIcon: {
     width: 25,
