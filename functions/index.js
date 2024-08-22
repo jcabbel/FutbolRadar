@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 const axios = require('axios');
 admin.initializeApp();
 
-exports.fetchFootballData = functions.pubsub.schedule('45 11 * * 4').timeZone('Europe/Madrid').onRun(async (context) => {
+exports.fetchFootballData = functions.pubsub.schedule('15 02 * * 3').timeZone('Europe/Madrid').onRun(async (context) => {
 
   // URLs de las ligas y competiciones
   const apiUrl1 = 'https://v3.football.api-sports.io/fixtures?status=NS&league=140&season=2024&timezone=Europe/Madrid';
