@@ -1,9 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+const isMobile = width < 768;
 
 export default StyleSheet.create({
   backgroundImage: {
     flex: 1,
+    width: width,
+    height: height,
     resizeMode: 'cover',
+    position: 'absolute',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -26,7 +32,7 @@ export default StyleSheet.create({
     background: '#25a519',
   },
   formContainer: {
-    width: '25%',
+    width: isMobile ? '80%' : '25%',
     padding: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 10,
@@ -51,12 +57,12 @@ export default StyleSheet.create({
     width: '100%',
     padding: 15,
     borderRadius: 5,
-    backgroundColor: '#25a519',  // Fondo del botón verde
+    backgroundColor: '#25a519',
     alignItems: 'center',
     marginTop: 10,
   },
   guestContainer: {
-    width: '25%',
+    width: isMobile ? '80%' : '25%',
     padding: 15,
     marginTop: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',

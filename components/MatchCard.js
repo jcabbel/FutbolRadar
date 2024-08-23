@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Linking, TouchableOpacity } from 'react-native';
-import SvgUri from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 
@@ -9,12 +8,7 @@ const formatDate = (dateString) => {
   return `${day}-${month}-${year}`;
 };
 
-const MatchCard = ({ homeTeam, awayTeam, date, time, homeLogo, awayLogo, leagueLogo, linkUrl }) => {
-  const handleLinkPress = () => {
-    if (linkUrl) {
-      Linking.openURL(linkUrl);
-    }
-  };
+const MatchCard = ({ homeTeam, awayTeam, date, time, homeLogo, awayLogo, leagueLogo}) => {
 
   return (
     <View style={styles.matchCardContainer}>
