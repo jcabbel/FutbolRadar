@@ -1,4 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+const isMobile = width < 768;
 
 export default StyleSheet.create({
   container: {
@@ -16,16 +19,16 @@ export default StyleSheet.create({
   },
   contentWrapper: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    flexDirection: isMobile ? 'column' : 'row',
+    alignItems: isMobile ? 'center' : 'flex-start',
+    justifyContent: isMobile ? 'center' : 'flex-start',
     marginTop: 70,
   },
 
   // Map styles
   mapWrapper: {
     flex: 2,
-    height: '100%'
+    height: height - 70,
   },
   mapContainer: {
     width: '100%',
@@ -98,6 +101,7 @@ export default StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#25a519',
     alignItems: 'center',
+    justifyContent: 'center'
   },
   locationButton: {
     width: '45%',
@@ -106,22 +110,22 @@ export default StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#ff7f50',
     alignItems: 'center',
+    justifyContent: 'center'
   },
   buttonText: {
     color: '#faf9f7',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 
   // List styles
   listWrapper: {
-    flex: 1,
-    height: '45%',
-    alignSelf: 'top',
+    width: '95%',
+    height: height - 70,
+    alignSelf: 'center',
   },
   listContentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
     paddingBottom: 20,
   },
   listContainer: {
@@ -137,7 +141,7 @@ export default StyleSheet.create({
     color: '#333',
   },
   matchCardContainer: {
-    width: '100%',
+    width: '95%',
     margin: 10,
     padding: 10,
     backgroundColor: '#fff',
@@ -147,5 +151,19 @@ export default StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
+  },
+  // Toggle button styles
+  toggleButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: '#25a519',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  toggleButtonText: {
+    color: '#faf9f7',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
