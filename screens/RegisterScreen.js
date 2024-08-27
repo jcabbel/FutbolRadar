@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import styles from '../styles/RegisterScreenStyles';
@@ -31,6 +31,11 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
+    <ImageBackground
+      source={require('../assets/stand-man.jpg')}
+      style={styles.backgroundImage}
+    >
+    <View style={styles.overlay} />
     <View style={styles.container}>
       <View style={styles.formContainer}>
         <View style={styles.logoContainer}>
@@ -72,6 +77,7 @@ const RegisterScreen = ({ navigation }) => {
         position="top-right"
       />
     </View>
+    </ImageBackground>
   );
 };
 
