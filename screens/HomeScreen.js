@@ -173,8 +173,24 @@ const HomeScreen = () => {
         }
         return acc;
       }, []);
+
+      sections.sort((a, b) => a.title.localeCompare(b.title));
+      const sectionToMove = sections.findIndex(section => section.title === 'Segunda División');
+      if (sectionToMove !== -1 && sectionToMove !== 1) {
+        const [section] = sections.splice(sectionToMove, 1);
+        sections.splice(1, 0, section);
+      }
+
+      sections.forEach(section => {
+        section.data.sort((a, b) => {
+          const timeA = a.fixture.date.split("T")[1].split("+")[0].split(":").join("");
+          const timeB = b.fixture.date.split("T")[1].split("+")[0].split(":").join("");
+          return timeA.localeCompare(timeB);
+        });
+      });
   
       setListData(sections);
+
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
     } finally {
