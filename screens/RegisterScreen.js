@@ -1,3 +1,4 @@
+//screens/RegisterScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
