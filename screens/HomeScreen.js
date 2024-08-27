@@ -130,30 +130,33 @@ const HomeScreen = () => {
         const fixtureDate = typeof data.fixture.date === 'string' ? data.fixture.date : '';
         const docDate = fixtureDate.split("T")[0];
 
-        if (docDate === selectedDate) {
-          const id = data.fixture.venue.id.toString();
-          const venueDocRef = doc(db, "venues", id);
-          const venueDocSnap = await getDoc(venueDocRef);
-
-          if (venueDocSnap.exists()) {
-            const venueData = venueDocSnap.data();
-
-            if (Array.isArray(venueData.location) && venueData.location.length === 2) {
-              const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
-              const distanceInMeters = getDistance(
-                { latitude: location.lat, longitude: location.lng },
-                { latitude, longitude }
-              );
-              const distanceInKm = distanceInMeters / 1000;
-
-              if (distanceInKm <= distance) {
-                documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
+        if(data.fixture.venue.id != null){
+          
+          if (docDate === selectedDate) {
+            const id = data.fixture.venue.id.toString();
+            const venueDocRef = doc(db, "venues", id);
+            const venueDocSnap = await getDoc(venueDocRef);
+  
+            if (venueDocSnap.exists()) {
+              const venueData = venueDocSnap.data();
+  
+              if (Array.isArray(venueData.location) && venueData.location.length === 2) {
+                const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
+                const distanceInMeters = getDistance(
+                  { latitude: location.lat, longitude: location.lng },
+                  { latitude, longitude }
+                );
+                const distanceInKm = distanceInMeters / 1000;
+  
+                if (distanceInKm <= distance) {
+                  documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
+                }
+              } else {
+                console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
               }
             } else {
-              console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
+              console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
             }
-          } else {
-            console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
           }
         }
       }
