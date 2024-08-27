@@ -23,7 +23,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import MatchCard from '../components/MatchCard';
 import CustomToast from '../components/CustomToast';
 
-const HomeScreen = () => {
+const HomeScreen = () => { 
   const [distance, setDistance] = useState(10);
   const [location, setLocation] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -39,6 +39,9 @@ const HomeScreen = () => {
   const { width, height } = Dimensions.get('window');
   const isMobile = width < 768;
   const [filtersVisible, setFiltersVisible] = useState(true);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const mapRef = React.useRef(null);
+
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -88,6 +91,13 @@ const HomeScreen = () => {
     fetchData();
   
   }, [collectionName]);
+
+  useEffect(() => {
+    if (selectedMarker && mapRef.current) {
+      mapRef.current.panTo(selectedMarker);
+      mapRef.current.setZoom(15);
+    }
+  }, [selectedMarker]);
 
   const handleGetLocation = () => {
     setIsLoading(true);
@@ -149,7 +159,7 @@ const HomeScreen = () => {
                 const distanceInKm = distanceInMeters / 1000;
   
                 if (distanceInKm <= distance) {
-                  documents.push({ ...data, id: docSnap.id, distance: distanceInKm });
+                  documents.push({ ...data, id: docSnap.id, distance: distanceInKm, latitude: latitude, longitude: longitude });
                 }
               } else {
                 console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
@@ -214,10 +224,15 @@ const HomeScreen = () => {
     const time = item.fixture.date.split("T")[1].split("+")[0];
     const timeFormatted = formatTime(time);
     const leagueLogo = item.league.logo;
+    const latitude = item.latitude;
+    const longitude = item.longitude;
 
     return (
-      <MatchCard 
-        key={id}
+      <TouchableOpacity 
+      key={id}
+      onPress={() => setSelectedMarker({ lat: latitude, lng: longitude })}
+    >
+      <MatchCard
         homeTeam={home.name} 
         awayTeam={away.name} 
         date={date} 
@@ -225,7 +240,10 @@ const HomeScreen = () => {
         homeLogo={home.logo} 
         awayLogo={away.logo} 
         leagueLogo={leagueLogo}
+        latitude={latitude}
+        longitude={longitude}
       />
+      </TouchableOpacity>
     );
   };
 
@@ -243,8 +261,10 @@ const HomeScreen = () => {
               mapContainerStyle={styles.mapContainer}
               center={location || { lat: 40.3816, lng: -3.74625 }}
               zoom={15}
+              onLoad={(map) => mapRef.current = map}
             >
               {location && <Marker position={location} />}
+              {selectedMarker && <Marker position={selectedMarker} />} // Añade el marcador seleccionado
             </GoogleMap>
           </LoadScript>
         </View>
