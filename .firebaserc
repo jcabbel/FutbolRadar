@@ -1,5 +1,16 @@
 {
   "projects": {
     "default": "futbol-radar"
-  }
+  },
+  "targets": {
+    "futbol-radar": {
+      "hosting": {
+        "futbol-radar": [
+          "futbol-radar"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
