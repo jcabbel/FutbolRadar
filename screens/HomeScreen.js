@@ -24,7 +24,7 @@ import MatchCard from '../components/MatchCard';
 import CustomToast from '../components/CustomToast';
 
 const HomeScreen = () => {
-  const [distance, setDistance] = useState(0);
+  const [distance, setDistance] = useState(10);
   const [location, setLocation] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +36,9 @@ const HomeScreen = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [collectionName, setCollectionName] = useState('matches');
   const [querySnapshot, setQuerySnapshot] = useState(null);
+  const { width, height } = Dimensions.get('window');
+  const isMobile = width < 768;
+  const [filtersVisible, setFiltersVisible] = useState(true);
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -121,10 +124,7 @@ const HomeScreen = () => {
 
     setIsLoading(true);
     try {
-      // const q = query(collection(db, collectionName));
-      // const querySnapshot = await getDocs(q);
       const documents = [];
-
       for (const docSnap of querySnapshot.docs) {
         const data = docSnap.data();
         const fixtureDate = typeof data.fixture.date === 'string' ? data.fixture.date : '';
@@ -183,11 +183,17 @@ const HomeScreen = () => {
     setSelectedDate(day.dateString);
   };
 
+  function formatTime(time) {
+    const timeParts = time.split(":");
+    return `${timeParts[0]}:${timeParts[1]}`;
+  }
+
   const renderItem = ({ item }) => {
     const { home, away } = item.teams;
     const id = item.fixture.id;
     const date = item.fixture.date.split("T")[0];
     const time = item.fixture.date.split("T")[1].split("+")[0];
+    const timeFormatted = formatTime(time);
     const leagueLogo = item.league.logo;
 
     return (
@@ -196,7 +202,7 @@ const HomeScreen = () => {
         homeTeam={home.name} 
         awayTeam={away.name} 
         date={date} 
-        time={time}
+        time={timeFormatted}
         homeLogo={home.logo} 
         awayLogo={away.logo} 
         leagueLogo={leagueLogo}
@@ -210,6 +216,8 @@ const HomeScreen = () => {
         <Navbar />
       </View>
       <View style={styles.contentWrapper}>
+        
+        {!isMobile && (
         <View style={styles.mapWrapper}>
           <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
             <GoogleMap
@@ -221,78 +229,138 @@ const HomeScreen = () => {
             </GoogleMap>
           </LoadScript>
         </View>
-        <ScrollView 
-          style={styles.searchWrapper}
-          contentContainerStyle={styles.searchContentContainer}>
-          <View style={styles.elementsContainer}>
-            <View style={styles.sliderContainer}>
-              <Text style={styles.sliderLabel}>Seleccionar distancia: {distance} km</Text>
-              <Slider
-                style={styles.slider}
-                minimumValue={1}
-                maximumValue={5000}
-                step={1}
-                value={distance}
-                onValueChange={setDistance}
-                minimumTrackTintColor="#25a519"
-                maximumTrackTintColor="#99FF33"
-                thumbTintColor="#25a519"
-              />
-            </View>
-            <View style={styles.calendarContainer}>
+      )}
+
+        {isMobile && (
+          <TouchableOpacity 
+            style={styles.toggleButton} 
+            onPress={() => setFiltersVisible(!filtersVisible)}
+          >
+            <Text style={styles.toggleButtonText}>
+              {filtersVisible ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {isMobile && filtersVisible && (
+          <ScrollView 
+            style={styles.searchWrapper}
+            contentContainerStyle={styles.searchContentContainer}
+          >
+            <View style={styles.elementsContainer}>
+              <View style={styles.sliderContainer}>
+                <Text style={styles.sliderLabel}>Seleccionar distancia: {distance} km</Text>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={1}
+                  maximumValue={5000}
+                  step={1}
+                  value={distance}
+                  onValueChange={setDistance}
+                  minimumTrackTintColor="#25a519"
+                  maximumTrackTintColor="#99FF33"
+                  thumbTintColor="#25a519"
+                />
+              </View>
+              <View style={styles.calendarContainer}>
               <Calendar
-                style={styles.calendar}
-                theme={{
-                  backgroundColor: '#f5f5f5',
-                  calendarBackground: '#f5f5f5',
-                  textSectionTitleColor: '#b6c1cd',
-                  textDayFontWeight: 'bold',
-                  textMonthFontWeight: 'bold',
-                  todayTextColor: '#25a519',
-                  dayTextColor: '#2d4150',
-                  textDisabledColor: '#d9e1e8',
-                  selectedDayBackgroundColor: '#25a519',
-                  selectedDayTextColor: '#fff',
-                  arrowColor: '#000000',
-                }}
-                markedDates={{
-                  [selectedDate]: { selected: true, marked: true, dotColor: '#25a519' },
-                }}
-                onDayPress={handleDayPress}
-                firstDay={1}
-              />
+                  style={styles.calendar}
+                  theme={{
+                    backgroundColor: '#f5f5f5',
+                    calendarBackground: '#f5f5f5',
+                    textSectionTitleColor: '#b6c1cd',
+                    textDayFontWeight: 'bold',
+                    textMonthFontWeight: 'bold',
+                    todayTextColor: '#25a519',
+                    dayTextColor: '#2d4150',
+                    textDisabledColor: '#d9e1e8',
+                    selectedDayBackgroundColor: '#25a519',
+                    selectedDayTextColor: '#fff',
+                    arrowColor: '#000000',
+                  }}
+                  onDayPress={handleDayPress}
+                  markedDates={{ [selectedDate]: { selected: true, disableTouchEvent: true, selectedColor: '#25a519', selectedTextColor: '#fff' } }}
+                  firstDay={1}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+                  <Text style={styles.buttonText}>BUSCAR</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.locationButton} onPress={handleGetLocation}>
+                  <Text style={styles.buttonText}>UBICACIÓN</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        )}
+
+        {!isMobile && (
+          <View style={styles.searchWrapper}>
+            <View style={styles.elementsContainer}>
+              <View style={styles.sliderContainer}>
+                <Text style={styles.sliderLabel}>Seleccionar distancia: {distance} km</Text>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={1}
+                  maximumValue={5000}
+                  step={1}
+                  value={distance}
+                  onValueChange={setDistance}
+                  minimumTrackTintColor="#25a519"
+                  maximumTrackTintColor="#99FF33"
+                  thumbTintColor="#25a519"
+                />
+              </View>
+              <View style={styles.calendarContainer}>
+                <Calendar
+                  style={styles.calendar}
+                  theme={{
+                    backgroundColor: '#f5f5f5',
+                    calendarBackground: '#f5f5f5',
+                    textSectionTitleColor: '#b6c1cd',
+                    textDayFontWeight: 'bold',
+                    textMonthFontWeight: 'bold',
+                    todayTextColor: '#25a519',
+                    dayTextColor: '#2d4150',
+                    textDisabledColor: '#d9e1e8',
+                    selectedDayBackgroundColor: '#25a519',
+                    selectedDayTextColor: '#fff',
+                    arrowColor: '#000000',
+                  }}
+                  onDayPress={handleDayPress}
+                  markedDates={{ [selectedDate]: { selected: true, disableTouchEvent: true, selectedColor: '#25a519', selectedTextColor: '#fff' } }}
+                  firstDay={1}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+                  <Text style={styles.buttonText}>BUSCAR</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.locationButton} onPress={handleGetLocation}>
+                  <Text style={styles.buttonText}>UBICACIÓN</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.locationButton} onPress={handleGetLocation}>
-              <Text style={styles.buttonText}>UBICACIÓN</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-              <Text style={styles.buttonText}>BUSCAR</Text>
-            </TouchableOpacity>
-          </View>
+        )}
+        <ScrollView style = {{flex:1}}>
+        <SectionList
+          sections={listData}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          renderSectionHeader={({ section: { title } }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionHeaderText}>{title}</Text>
+            </View>
+          )}
+          contentContainerStyle={styles.listContentContainer}
+          style={styles.listWrapper}
+        />
         </ScrollView>
-        <View style={styles.listWrapper}>
-          <ScrollView
-            contentContainerStyle={styles.listContentContainer}>
-            <SectionList
-              sections={listData}
-              renderItem={({ item }) => renderItem({ item })}
-              renderSectionHeader={({ section: { title } }) => (
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionHeaderText}>{title}</Text>
-                </View>
-              )}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.listContainer}
-            />
-          </ScrollView>
-        </View>
       </View>
       {isLoading && <LoadingOverlay />}
-      <ToastContainer 
-        position="top-right"
-      />
+      <ToastContainer />
     </View>
   );
 };
