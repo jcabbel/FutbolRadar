@@ -292,7 +292,7 @@ const HomeScreen = () => {
                 <Slider
                   style={styles.slider}
                   minimumValue={1}
-                  maximumValue={5000}
+                  maximumValue={100}
                   step={1}
                   value={distance}
                   onValueChange={setDistance}
@@ -342,7 +342,7 @@ const HomeScreen = () => {
                 <Slider
                   style={styles.slider}
                   minimumValue={1}
-                  maximumValue={5000}
+                  maximumValue={100}
                   step={1}
                   value={distance}
                   onValueChange={setDistance}
