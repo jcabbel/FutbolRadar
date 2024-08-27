@@ -62,7 +62,6 @@ exports.fetchFootballData = functions.pubsub.schedule('40 12 * * 4').timeZone('E
     const collectionRef = admin.firestore().collection('matches');
     const guestCollectionRef = admin.firestore().collection('matches_guest');
 
-    // Función para eliminar todos los documentos de una colección
     const deleteCollection = async (collection) => {
       const snapshot = await collection.get();
       const batch = admin.firestore().batch();
@@ -73,12 +72,9 @@ exports.fetchFootballData = functions.pubsub.schedule('40 12 * * 4').timeZone('E
 
       await batch.commit();
     };
-
-    // Delete all documents
     await deleteCollection(collectionRef);
     await deleteCollection(guestCollectionRef);
 
-    // Add new documents
     const batch = admin.firestore().batch();
     combinedData.forEach(match => {
       const docRef = collectionRef.doc(`match_${match.fixture.id}`);

@@ -1,3 +1,4 @@
+//screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
