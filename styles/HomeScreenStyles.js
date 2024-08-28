@@ -5,7 +5,8 @@ const isMobile = width < 768;
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
+    width,
+    height,
     backgroundColor: '#faf9f7',
   },
   navbarWrapper: {
@@ -27,8 +28,11 @@ export default StyleSheet.create({
 
   // Map styles
   mapWrapper: {
-    flex: 2,
-    height: height - 70,
+    flex: isMobile  ? 1 : 2,
+    width: '100%',
+    borderTopWidth: isMobile ? 2 : 0,
+    borderTopColor: '#25a519',
+    height: isMobile ? '60 %': height - 70,
   },
   mapContainer: {
     width: '100%',
@@ -39,7 +43,9 @@ export default StyleSheet.create({
 
   searchWrapper: {
     flex: 1,
+    height: '100%',
     backgroundColor: '#faf9f7',
+    zIndex: 1,
   },
   searchContentContainer: {
     justifyContent: 'flex-start',
@@ -95,20 +101,11 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
   },
   searchButton: {
-    width: '45%',
+    width: '100%',
     padding: 10,
     margin: 5,
     borderRadius: 5,
     backgroundColor: '#25a519',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  locationButton: {
-    width: '45%',
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-    backgroundColor: '#ff7f50',
     alignItems: 'center',
     justifyContent: 'center'
   },

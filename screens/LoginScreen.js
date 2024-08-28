@@ -66,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.guestButton} onPress={handleGuestLogin}>
           <Text style={styles.buttonText}>Entrar como Invitado</Text>
         </TouchableOpacity>
-        <Text>Solo verás los partidos de Primera División</Text>
+        <Text style={styles.text}>Solo verás los partidos de Primera División</Text>
       </View>
     </View>
     </ImageBackground>  

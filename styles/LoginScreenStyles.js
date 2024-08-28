@@ -29,7 +29,6 @@ export default StyleSheet.create({
     width: 200,
     height: 100,
     resizeMode: 'contain',
-    background: '#25a519',
   },
   formContainer: {
     width: isMobile ? '80%' : '25%',
@@ -85,6 +84,9 @@ export default StyleSheet.create({
     color: '#25a519',
     fontSize: 16,
     marginTop: 10,
+    textAlign: 'center',
+  },
+  text: {
     textAlign: 'center',
   },
 });
