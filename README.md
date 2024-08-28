@@ -2,7 +2,7 @@ FutbolRadar es una aplicación web que permite a los usuarios buscar partidos de
 
 Características
 
-    Búsqueda por Ubicación: Obtén partidos cercanos a tu ubicación actual en función del rango definido por el usuario.
+    Búsqueda por Ubicación: Obtén partidos cercanos a tu ubicación actual o una ubicación seleccionada en el mapa en función del rango definido por el usuario.
     Filtro por Fecha: Selecciona una fecha específica para ver los partidos programados.
     Detalles del Partido: Visualiza información detallada sobre el equipo local y el equipo visitante, incluyendo logotipos y horarios.
     Mapa Interactivo: Visualiza la ubicación de los partidos en un mapa interactivo y selecciona un marcador para centrar el mapa en ese partido.
