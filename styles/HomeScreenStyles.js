@@ -5,7 +5,8 @@ const isMobile = width < 768;
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
+    width,
+    height,
     backgroundColor: '#faf9f7',
   },
   navbarWrapper: {
@@ -42,7 +43,9 @@ export default StyleSheet.create({
 
   searchWrapper: {
     flex: 1,
+    height: '100%',
     backgroundColor: '#faf9f7',
+    zIndex: 1,
   },
   searchContentContainer: {
     justifyContent: 'flex-start',
