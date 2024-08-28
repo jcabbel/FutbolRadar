@@ -29,7 +29,6 @@ export default StyleSheet.create({
     width: 200,
     height: 100,
     resizeMode: 'contain',
-    background: '#25a519',
   },
   formContainer: {
     width: isMobile ? '80%' : '25%',

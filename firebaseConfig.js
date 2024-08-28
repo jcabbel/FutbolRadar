@@ -4,16 +4,16 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID } from '@env';
+import { EXPO_PUBLIC_FIREBASE_API_KEY, EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN, EXPO_PUBLIC_FIREBASE_PROJECT_ID, EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET, EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID, EXPO_PUBLIC_FIREBASE_APP_ID, EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID } from '@env';
 
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBASE_APP_ID,
-  measurementId: FIREBASE_MEASUREMENT_ID,
+  apiKey: EXPO_PUBLIC_FIREBASE_API_KEY || 'test',
+  authDomain: EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'test',
+  projectId: EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'test',
+  storageBucket: EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'test',
+  messagingSenderId: EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || 'test',
+  appId: EXPO_PUBLIC_FIREBASE_APP_ID || 'test',
+  measurementId: EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || 'test',
 };
 
 const app = initializeApp(firebaseConfig);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, SectionList, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { GOOGLE_MAPS_API_KEY } from '@env';
+import { EXPO_PUBLIC_GOOGLE_MAPS_API_KEY } from '@env';
 import { db } from '../firebaseConfig';
 import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getDistance } from 'geolib';
@@ -256,7 +256,7 @@ const HomeScreen = () => {
         
         {!isMobile && (
         <View style={styles.mapWrapper}>
-          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+          <LoadScript googleMapsApiKey={EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}>
             <GoogleMap
               mapContainerStyle={styles.mapContainer}
               center={location || { lat: 40.3816, lng: -3.74625 }}
