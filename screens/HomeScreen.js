@@ -154,7 +154,8 @@ const HomeScreen = () => {
       toast.warn(<CustomToast message="No se encontraron datos. Intenta de nuevo." />);
       return;
     }
-  
+    
+    setFiltersVisible(false);
     setIsLoading(true);
     try {
       const documents = [];
@@ -411,6 +412,22 @@ const HomeScreen = () => {
           style={styles.listWrapper}
         />
         </ScrollView>
+
+        {isMobile && (
+        <View style={styles.mapWrapper}>
+          <LoadScript googleMapsApiKey={EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}>
+            <GoogleMap
+              mapContainerStyle={styles.mapContainer}
+              center={location || { lat: 40.3816, lng: -3.74625 }}
+              zoom={15}
+              onLoad={(map) => mapRef.current = map}
+            >
+              {location && <Marker position={location} />}
+              {selectedMarker && <Marker position={selectedMarker} />} // Añade el marcador seleccionado
+            </GoogleMap>
+          </LoadScript>
+        </View>
+      )}
       </View>
       {isLoading && <LoadingOverlay />}
       <ToastContainer />

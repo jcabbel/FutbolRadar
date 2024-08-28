@@ -27,8 +27,11 @@ export default StyleSheet.create({
 
   // Map styles
   mapWrapper: {
-    flex: 2,
-    height: height - 70,
+    flex: isMobile  ? 1 : 2,
+    width: '100%',
+    borderTopWidth: isMobile ? 2 : 0,
+    borderTopColor: '#25a519',
+    height: isMobile ? '60 %': height - 70,
   },
   mapContainer: {
     width: '100%',
