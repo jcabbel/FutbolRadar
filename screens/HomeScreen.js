@@ -14,7 +14,6 @@ import styles from '../styles/HomeScreenStyles';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/CustomToastStyles.css';
 
-
 // Component imports
 import Navbar from '../components/Navbar';
 import Slider from '@react-native-community/slider';
@@ -23,7 +22,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import MatchCard from '../components/MatchCard';
 import CustomToast from '../components/CustomToast';
 
-const HomeScreen = () => { 
+const HomeScreen = () => {
   const [distance, setDistance] = useState(10);
   const [location, setLocation] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -41,7 +40,8 @@ const HomeScreen = () => {
   const [filtersVisible, setFiltersVisible] = useState(true);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const mapRef = React.useRef(null);
-
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+  const [shouldSearch, setShouldSearch] = useState(false);
 
   useEffect(() => {
     const onChange = ({ window }) => {
@@ -73,23 +73,21 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         const q = query(collection(db, collectionName));
         const querySnapshot = await getDocs(q);
 
         setQuerySnapshot(querySnapshot);
-  
       } catch (error) {
         console.error('Error al obtener los partidos:', error);
         toast.error(<CustomToast message="Error al obtener los partidos. Por favor, intenta de nuevo." />);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
-  
+
     fetchData();
-  
   }, [collectionName]);
 
   useEffect(() => {
@@ -99,39 +97,64 @@ const HomeScreen = () => {
     }
   }, [selectedMarker]);
 
-  const handleGetLocation = () => {
-    setIsLoading(true);
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ lat: latitude, lng: longitude });
-        setIsLoading(false);
-      },
-      (error) => {
-        console.error(error.code, error.message);
-        toast.error(<CustomToast message="No se pudo obtener la ubicación. Intenta de nuevo." />);
-        setIsLoading(false);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
+  useEffect(() => {
+    if (shouldSearch && location) {
+      performSearch();
+    }
+  }, [shouldSearch, location]);
 
+  const handleGetLocation = () => {
+    return new Promise((resolve, reject) => {
+      setIsLoading(true);
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const locationData = { lat: latitude, lng: longitude };
+          setLocation(locationData);
+          setIsLoading(false);
+          setShouldSearch(true);
+          resolve(locationData);
+        },
+        (error) => {
+          console.error(error.code, error.message);
+          toast.error(<CustomToast message="No se pudo obtener la ubicación. Intenta de nuevo." />);
+          setIsLoading(false);
+          setShouldSearch(false);
+          reject(error);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    });
+  };
+  
   const handleSearch = async () => {
     if (!location) {
-      toast.warn(<CustomToast message="Ubicación no disponible. Por favor, haz click en el botón Ubicación" />);
-      return;
+      try {
+        await handleGetLocation();
+      } catch (error) {
+        console.error('Error al obtener la ubicación:', error);
+        return;
+      }
+    } else {
+      setShouldSearch(true);
     }
+  };
 
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
+  const performSearch = async () => {
     if (!selectedDate) {
       toast.warn(<CustomToast message="Fecha no seleccionada. Por favor, selecciona una fecha." />);
       return;
     }
-
+  
     if (!querySnapshot || querySnapshot.empty) {
       toast.warn(<CustomToast message="No se encontraron datos. Intenta de nuevo." />);
       return;
     }
-
+  
     setIsLoading(true);
     try {
       const documents = [];
@@ -139,41 +162,40 @@ const HomeScreen = () => {
         const data = docSnap.data();
         const fixtureDate = typeof data.fixture.date === 'string' ? data.fixture.date : '';
         const docDate = fixtureDate.split("T")[0];
-
-        if(data.fixture.venue.id != null){
-          
-          if (docDate === selectedDate) {
-            const id = data.fixture.venue.id.toString();
-            const venueDocRef = doc(db, "venues", id);
-            const venueDocSnap = await getDoc(venueDocRef);
   
-            if (venueDocSnap.exists()) {
-              const venueData = venueDocSnap.data();
+        if (data.fixture.venue.id != null && docDate === selectedDate) {
+          const id = data.fixture.venue.id.toString();
+          const venueDocRef = doc(db, "venues", id);
+          const venueDocSnap = await getDoc(venueDocRef);
   
-              if (Array.isArray(venueData.location) && venueData.location.length === 2) {
-                const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
-                const distanceInMeters = getDistance(
-                  { latitude: location.lat, longitude: location.lng },
-                  { latitude, longitude }
-                );
-                const distanceInKm = distanceInMeters / 1000;
+          if (venueDocSnap.exists()) {
+            const venueData = venueDocSnap.data();
   
-                if (distanceInKm <= distance) {
-                  documents.push({ ...data, id: docSnap.id, distance: distanceInKm, latitude: latitude, longitude: longitude });
-                }
-              } else {
-                console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
+            if (Array.isArray(venueData.location) && venueData.location.length === 2) {
+              const [latitude, longitude] = venueData.location.map(coord => parseFloat(coord));
+              const distanceInMeters = getDistance(
+                { latitude: location.lat, longitude: location.lng },
+                { latitude, longitude }
+              );
+              const distanceInKm = distanceInMeters / 1000;
+  
+              if (distanceInKm <= distance) {
+                documents.push({ ...data, id: docSnap.id, distance: distanceInKm, latitude, longitude });
               }
             } else {
-              console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
+              console.log(`El campo location no es un array válido para el venue con ID: ${data.fixture.venue.id}`);
             }
+          } else {
+            console.log(`No existe el documento de venue con ID: ${data.fixture.venue.id}`);
           }
         }
       }
+  
       if (documents.length === 0) {
         toast.warn("No se encontraron resultados para la búsqueda.");
       }
-        const sections = documents.reduce((acc, doc) => {
+  
+      const sections = documents.reduce((acc, doc) => {
         const leagueName = doc.league.name;
         if (!acc.some(section => section.title === leagueName)) {
           acc.push({ title: leagueName, data: [doc] });
@@ -183,14 +205,14 @@ const HomeScreen = () => {
         }
         return acc;
       }, []);
-
+  
       sections.sort((a, b) => a.title.localeCompare(b.title));
       const sectionToMove = sections.findIndex(section => section.title === 'Segunda División');
       if (sectionToMove !== -1 && sectionToMove !== 1) {
         const [section] = sections.splice(sectionToMove, 1);
         sections.splice(1, 0, section);
       }
-
+  
       sections.forEach(section => {
         section.data.sort((a, b) => {
           const timeA = a.fixture.date.split("T")[1].split("+")[0].split(":").join("");
@@ -200,21 +222,19 @@ const HomeScreen = () => {
       });
   
       setListData(sections);
-
+  
     } catch (error) {
       console.error('Error al obtener los partidos:', error);
     } finally {
       setIsLoading(false);
+      setShouldSearch(false);
     }
   };
 
-  const handleDayPress = (day) => {
-    setSelectedDate(day.dateString);
-  };
-
   function formatTime(time) {
-    const timeParts = time.split(":");
-    return `${timeParts[0]}:${timeParts[1]}`;
+    const timeString = time.split('+')[0];
+    const [hour, minute] = timeString.split(':');
+    return `${hour}:${minute}`;
   }
 
   const renderItem = ({ item }) => {
@@ -326,9 +346,6 @@ const HomeScreen = () => {
                 <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
                   <Text style={styles.buttonText}>BUSCAR</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.locationButton} onPress={handleGetLocation}>
-                  <Text style={styles.buttonText}>UBICACIÓN</Text>
-                </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
@@ -375,9 +392,6 @@ const HomeScreen = () => {
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
                   <Text style={styles.buttonText}>BUSCAR</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.locationButton} onPress={handleGetLocation}>
-                  <Text style={styles.buttonText}>UBICACIÓN</Text>
                 </TouchableOpacity>
               </View>
             </View>

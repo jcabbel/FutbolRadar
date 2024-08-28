@@ -95,20 +95,11 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
   },
   searchButton: {
-    width: '45%',
+    width: '100%',
     padding: 10,
     margin: 5,
     borderRadius: 5,
     backgroundColor: '#25a519',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  locationButton: {
-    width: '45%',
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-    backgroundColor: '#ff7f50',
     alignItems: 'center',
     justifyContent: 'center'
   },
