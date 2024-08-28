@@ -1,4 +1,4 @@
-FutbolRadar es una aplicación web que permite a los usuarios buscar partidos de fútbol basados en su ubicación actual y en una fecha seleccionada. Los usuarios pueden ver los partidos de diferentes ligas, filtrarlos por distancia y fecha, y ver detalles como el equipo local, el equipo visitante, la fecha y la hora del partido. Disponibles los partidos con hora programada entre la Primera División hasta la Segunda RFEF.
+FutbolRadar es una aplicación web que permite a los usuarios buscar partidos de fútbol basados en su ubicación actual y en una fecha seleccionada. Los usuarios pueden ver los partidos de diferentes ligas, filtrarlos por distancia y fecha, y ver detalles como el equipo local, el equipo visitante, la fecha y la hora del partido. Disponibles los partidos con hora programada desde la Primera División hasta la Segunda RFEF.
 
 Características
 
