@@ -398,6 +398,8 @@ const HomeScreen = () => {
             </View>
           </View>
         )}
+
+        {isMobile && !filtersVisible && (
         <ScrollView style = {{flex:1}}>
         <SectionList
           sections={listData}
@@ -412,8 +414,26 @@ const HomeScreen = () => {
           style={styles.listWrapper}
         />
         </ScrollView>
+        )}
 
-        {isMobile && (
+        {!isMobile && (
+        <ScrollView style = {{flex:1}}>
+        <SectionList
+          sections={listData}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          renderSectionHeader={({ section: { title } }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionHeaderText}>{title}</Text>
+            </View>
+          )}
+          contentContainerStyle={styles.listContentContainer}
+          style={styles.listWrapper}
+        />
+        </ScrollView>
+        )}
+
+        {isMobile && !filtersVisible && (
         <View style={styles.mapWrapper}>
           <LoadScript googleMapsApiKey={EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}>
             <GoogleMap
