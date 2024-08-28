@@ -144,6 +144,15 @@ const HomeScreen = () => {
     setSelectedDate(day.dateString);
   };
 
+  const handleMapClick = (event) => {
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+    const newLocation = { lat, lng };
+    setLocation(newLocation);
+    setSelectedMarker(newLocation);
+  };
+  
+
   const performSearch = async () => {
     if (!selectedDate) {
       toast.warn(<CustomToast message="Fecha no seleccionada. Por favor, selecciona una fecha." />);
@@ -283,9 +292,10 @@ const HomeScreen = () => {
               center={location || { lat: 40.3816, lng: -3.74625 }}
               zoom={15}
               onLoad={(map) => mapRef.current = map}
+              onClick={handleMapClick}
             >
               {location && <Marker position={location} />}
-              {selectedMarker && <Marker position={selectedMarker} />} // Añade el marcador seleccionado
+              {selectedMarker && <Marker position={selectedMarker} />}
             </GoogleMap>
           </LoadScript>
         </View>
