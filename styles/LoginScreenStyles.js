@@ -86,4 +86,7 @@ export default StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
   },
+  text: {
+    textAlign: 'center',
+  },
 });
