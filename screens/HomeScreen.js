@@ -93,7 +93,7 @@ const HomeScreen = () => {
   useEffect(() => {
     if (selectedMarker && mapRef.current) {
       mapRef.current.panTo(selectedMarker);
-      mapRef.current.setZoom(15);
+      mapRef.current.setZoom(12);
     }
   }, [selectedMarker]);
 
@@ -290,7 +290,7 @@ const HomeScreen = () => {
             <GoogleMap
               mapContainerStyle={styles.mapContainer}
               center={location || { lat: 40.3816, lng: -3.74625 }}
-              zoom={15}
+              zoom={6}
               onLoad={(map) => mapRef.current = map}
               onClick={handleMapClick}
             >
